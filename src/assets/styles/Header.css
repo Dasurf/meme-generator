@@ -1,0 +1,16 @@
+Header {
+    display: flex;
+    background-image: linear-gradient(to right, #672280, #A626D3);
+    padding: 20px 35px;
+    color: #fff;
+    font-family: Karla, sans-serif;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo {
+    display: flex;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+}
