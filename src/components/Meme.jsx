@@ -1,28 +1,28 @@
-import React, {useState} from "react";
+import React, {useState, useEffect, useId} from "react";
 import "../assets/styles/Meme.css";
-import memesData from "../memesData";
-import { useId } from "react";
 
 
 export default function Meme() {
-    const memesArray = memesData.data.memes;
-    const [formData, setFormData] = useState(
-        {
-            topText: "",
-            bottomText: "",
-            id: "",
-            name: "",
-            url: "",
-            width: "",
-            height: "",
-            box_count: "",
-        }
-    )
+    const [meme, setMeme] = useState({
+        topText: "",
+        bottomText: "",
+        url: "https://i.imgflip.com/1ur9b0.jpg",
+        width: "",
+        height: ""
+    });
+    const [allMemes, setAllMemes] = useState({});
+
+    useEffect(() => {
+        fetch("https://api.imgflip.com/get_memes")
+        .then(res => res.json())
+        .then(memesData => setAllMemes(memesData.data.memes))
+        .catch(() => console.log("Error"))
+    }, []);
 
     function handleChange(event) {
         const {name, value} = event.target;
 
-        setFormData(prevFormData => {
+        setMeme(prevFormData => {
             return (
                 {
                     ...prevFormData,
@@ -37,22 +37,20 @@ export default function Meme() {
 
     function getImage(event) {
         event.preventDefault();
-        const randomNumber = Math.floor(Math.random() * memesArray.length);
-        const currentData = memesArray[randomNumber];
+        const randomNumber = Math.floor(Math.random() * allMemes.length);
+        const currentData = allMemes[randomNumber];
 
-        setFormData(prevFormData => {
+        setMeme(prevFormData => {
             return {
                 ...prevFormData,
-                id: currentData.id,
-                name: currentData.name,
                 url: currentData.url,
-                width: currentData.width,
                 height: currentData.height,
-                box_count: currentData.box_count,
+                width: currentData.width
             }
         });
     }
-    console.log("Form Data", formData);
+    console.log("meme Data", allMemes);
+    console.log("meme: ", meme);
 
     return (
         <main className="meme-input">
@@ -64,7 +62,7 @@ export default function Meme() {
                     placeholder="Enter top text" 
                     id={id + "-top--text"}
                     onChange={handleChange}
-                    value={formData.topText}/>
+                    value={meme.topText}/>
                 <br />
 
                 <label htmlFor={id + "-bottom--text"}>Bottom text</label>
@@ -74,16 +72,16 @@ export default function Meme() {
                     placeholder="Enter bottom text" 
                     id={id + "-bottom--text"}
                     onChange={handleChange}
-                    value={formData.bottomText}
+                    value={meme.bottomText}
                     />
                 <br />
                 <button type="submit">Get a new meme image  🖼</button>
             </form>
             <br />
             <div className="meme--container">
-                <img src={`${formData.url}`} className="meme--image" width={formData.width} height={formData.height} />
-                <h2 className="meme--text top">{formData.topText}</h2>
-                <h2 className="meme--text bottom">{formData.bottomText}</h2>
+                <img src={`${meme.url}`} className="meme--image" width={meme.width} height={meme.height}/>
+                <h2 className="meme--text top">{meme.topText}</h2>
+                <h2 className="meme--text bottom">{meme.bottomText}</h2>
             </div>
 
         
